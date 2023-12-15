@@ -20,7 +20,7 @@ const addContact = async (req, res) => {
   res.status(201).json(result);
 };
 
-const removeContact = async (req, res) => { 
+const removeContact = async (req, res) => {
   const { contactId } = req.params;
   const result = await contactsAPI.removeContact(contactId);
   if (!result) {
