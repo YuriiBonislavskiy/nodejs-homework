@@ -19,4 +19,11 @@ router.put(
   ctrl.updateContact
 );
 
+router.patch(
+  "/:contactId/favorite",
+  isValidId,
+  validateBody(schemas.updateStatusContactSchema),
+  ctrl.updateStatusContact
+);
+
 module.exports = router;
