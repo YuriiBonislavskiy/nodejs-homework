@@ -5,14 +5,14 @@ const { schemas } = require("../../models/contact");
 const router = express.Router();
 
 router.get("/",
-  // authenticate,
+  authenticate,
   ctrl.listContacts);
 
 router.get("/:contactId", authenticate, isValidId, ctrl.getContactById);
 
 router.post(
   "/",
-  // authenticate,
+  authenticate,
   validateBody(schemas.addSchema),
   ctrl.addContact
 );

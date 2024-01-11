@@ -36,28 +36,38 @@ userSchema.post("save", handleMongooseError);
 
 const userValidationSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required().messages({
-    "string.pattern.base": "field name is incorrect format",
-    "any.required": "Помилка від Joi або іншої бібліотеки валідації",
+    "string.email": "field email is incorrect format",
+    "string.pattern.base": "field email is incorrect format",
+    "string.empty": "field email cannot be empty",
+    "any.required": "missing required email field",
   }),
   password: Joi.string().min(6).required().messages({
-    "string.min": `field password} should have a minimum length of {#limit}`,
-    "any.required": "Помилка від Joi або іншої бібліотеки валідації",
+    "string.min": `field password should have a minimum length of {#limit}`,
+    "string.empty": "field name cannot be empty",
+    "any.required": "missing required name field",
   }),
   subscription: Joi.string()
     .valid("starter", "pro", "business")
+    .required()
     .messages({
       "any.only": `field subscription must be one of [starter, pro, business]`,
     }),
 });
 
-// const loginSchema = Joi.object({
-//   email: Joi.string().pattern(emailRegexp).required(),
-//   password: Joi.string().min(6).required(),
-// });
+const userSubscriptionSchema = Joi.object({
+  subscription: Joi.string()
+    .valid("starter", "pro", "business")
+    .required()
+    .messages({
+      "any.only": `field subscription must be one of [starter, pro, business]`,
+      "any.required": "missing required subscription field",
+      "string.empty": `field subscription must be one of [starter, pro, business]`,
+    }),
+});
 
 const schemas = {
   userValidationSchema,
-  //   loginSchema,
+  userSubscriptionSchema,
 };
 
 const User = model("user", userSchema);
