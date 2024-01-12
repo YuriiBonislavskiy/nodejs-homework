@@ -43,12 +43,11 @@ const userValidationSchema = Joi.object({
   }),
   password: Joi.string().min(6).required().messages({
     "string.min": `field password should have a minimum length of {#limit}`,
-    "string.empty": "field name cannot be empty",
-    "any.required": "missing required name field",
+    "string.empty": "field password cannot be empty",
+    "any.required": "missing required password field",
   }),
   subscription: Joi.string()
     .valid("starter", "pro", "business")
-    .required()
     .messages({
       "any.only": `field subscription must be one of [starter, pro, business]`,
     }),
