@@ -1,6 +1,20 @@
 const { Contact } = require("../models/contact");
 const { HttpError, ctrlWrapper } = require("../helpers");
 
+const userRight = async (req, contactId) => {
+  const result = await Contact.findById(contactId).populate("owner");
+  if (!result) {
+    throw HttpError(404, "Not found");
+  }
+  const userId = req.user.id;
+  const ownerId = result.owner.id;
+
+  if (userId !== ownerId) {
+    throw HttpError(403, "You do not have the right to carry out this action");
+  }
+  return result;
+}
+
 const listContacts = async (req, res) => {
   const { _id: owner } = req.user;
   const { page = 1, limit = 20, favorite } = req.query;
@@ -41,16 +55,8 @@ const addContact = async (req, res) => {
 
 const removeContact = async (req, res) => {
   const { contactId } = req.params;
-  const result = await Contact.findById(contactId).populate("owner");
-  if (!result) {
-    throw HttpError(404, "Not found");
-  }
-  const userId = req.user.id;
-  const ownerId = result.owner.id;
-
-  if (userId !== ownerId) {
-    throw HttpError(403, "You do not have the right to carry out this action");
-  }
+  
+  await userRight(req, contactId);
 
   await Contact.findByIdAndRemove(contactId);
 
@@ -61,16 +67,8 @@ const removeContact = async (req, res) => {
 
 const updateContact = async (req, res) => {
   const { contactId } = req.params;
-  const result = await Contact.findById(contactId).populate("owner");
-  if (!result) {
-    throw HttpError(404, "Not found");
-  }
-  const userId = req.user.id;
-  const ownerId = result.owner.id;
-
-  if (userId !== ownerId) {
-    throw HttpError(403, "You do not have the right to carry out this action");
-  }
+  
+  const result = await userRight(req, contactId);
 
   await Contact.findByIdAndUpdate(contactId, req.body, {
     new: true,
@@ -80,16 +78,8 @@ const updateContact = async (req, res) => {
 
 const updateStatusContact = async (req, res) => {
   const { contactId } = req.params;
-  const result = await Contact.findById(contactId).populate("owner");
-  if (!result) {
-    throw HttpError(404, "Not found");
-  }
-  const userId = req.user.id;
-  const ownerId = result.owner.id;
 
-  if (userId !== ownerId) {
-    throw HttpError(403, "You do not have the right to carry out this action");
-  }
+  const result = await userRight(req, contactId);
 
   await Contact.findByIdAndUpdate(contactId, req.body, {
     new: true,
