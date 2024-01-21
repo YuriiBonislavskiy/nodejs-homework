@@ -40,7 +40,7 @@ const getContactById = async (req, res) => {
   }
   const userId = req.user.id;
   const ownerId = result.owner.id;
-  console.log(userId, "  ", ownerId);
+  // console.log(userId, "  ", ownerId);
   if (userId !== ownerId) {
     throw HttpError(403, "You do not have the right to carry out this action");
   }
