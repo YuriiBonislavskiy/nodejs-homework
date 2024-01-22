@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
-var Jimp = require("jimp");
 const path = require("path");
 const fs = require("fs/promises");
+const Jimp = require("jimp");
 
 const { User } = require("../models/user");
 
@@ -94,6 +94,9 @@ const updateSubscription = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
+  if (!req.file) {
+    throw HttpError(400, "Avatar file not found");
+  }
   const { path: tempUpload, originalname } = req.file;
   const avatarImage = await Jimp.read(tempUpload);
   await avatarImage.resize(250, 250); 
